@@ -12,6 +12,8 @@ using Basket.API.Repositories;
 using Discount.Grpc.Protos;
 using EventBus.Messages.Events;
 using MassTransit;
+using Microsoft.Extensions.Logging;
+using Serilog.Core;
 
 namespace Basket.API.Controllers
 {
@@ -23,19 +25,23 @@ namespace Basket.API.Controllers
         private readonly DiscountGrpcService _discountGrpcService;
         private readonly IPublishEndpoint _publishEndpoint;
         private readonly IMapper _mapper;
+        private readonly ILogger<BasketController> _logger;
 
-        public BasketController(IBasketRepository repository, DiscountGrpcService discountGrpcService, IPublishEndpoint publishEndpoint, IMapper mapper)
+
+        public BasketController(IBasketRepository repository, DiscountGrpcService discountGrpcService, IPublishEndpoint publishEndpoint, IMapper mapper, ILogger<BasketController> logger)
         {
             _repository = repository ?? throw new ArgumentNullException(nameof(repository));
             _discountGrpcService = discountGrpcService ?? throw new ArgumentNullException(nameof(discountGrpcService));
             _publishEndpoint = publishEndpoint ?? throw new ArgumentNullException(nameof(publishEndpoint));
             _mapper = mapper ?? throw new ArgumentNullException(nameof(mapper));
+            _logger = logger;
         }
 
         [HttpGet("{username}",Name = "GetBasket")]
         [ProducesResponseType(StatusCodes.Status200OK)]
         public async Task<IActionResult> GetBasket(string username)
         {
+            _logger.LogInformation("binhnq get basket");
             var basket = await _repository.GetBasket(username);
             return Ok(basket ?? new ShoppingCart(username));
         }
