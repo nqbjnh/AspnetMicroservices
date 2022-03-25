@@ -8,9 +8,12 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using IdentityModel;
 using IdentityModel.Client;
+using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.AspNetCore.Authentication.OpenIdConnect;
+using Microsoft.IdentityModel.Tokens;
 using Microsoft.Net.Http.Headers;
 using Movies.Client.ApiServices;
 using Movies.Client.HttpHandlers;
@@ -76,11 +79,12 @@ namespace Movies.Client
                     options.ClientSecret = "secret";
                     options.ResponseType = "code id_token";
 
-                    options.Scope.Add("openid");
-                    options.Scope.Add("profile");
-                    //options.Scope.Add("address");
-                    //options.Scope.Add("email");
-                    //options.Scope.Add("roles");
+                    //options.Scope.Add("openid");
+                    //options.Scope.Add("profile");
+                    options.Scope.Add("address");
+                    options.Scope.Add("email");
+                    options.Scope.Add("roles");
+                    options.Scope.Add("movieAPI");
 
                     /*options.ClaimActions.DeleteClaim("sid");
                     options.ClaimActions.DeleteClaim("idp");
@@ -88,16 +92,16 @@ namespace Movies.Client
                     options.ClaimActions.DeleteClaim("auth_time");
                     options.ClaimActions.MapUniqueJsonKey("role", "role");*/
 
-                    options.Scope.Add("movieAPI");
+                    options.ClaimActions.MapUniqueJsonKey("role", "role");
 
                     options.SaveTokens = true;
                     options.GetClaimsFromUserInfoEndpoint = true;
 
-                    /*options.TokenValidationParameters = new TokenValidationParameters
+                    options.TokenValidationParameters = new TokenValidationParameters
                     {
                         NameClaimType = JwtClaimTypes.GivenName,
                         RoleClaimType = JwtClaimTypes.Role
-                    };*/
+                    };
                 });
         }
 

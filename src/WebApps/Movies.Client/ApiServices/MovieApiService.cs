@@ -8,18 +8,19 @@ using System.Threading.Tasks;
 using IdentityModel.Client;
 using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Http;
+using Microsoft.IdentityModel.Protocols.OpenIdConnect;
 
 namespace Movies.Client.ApiServices
 {
     public class MovieApiService : IMovieApiService
     {
         private readonly IHttpClientFactory _httpClientFactory;
-        //private readonly IHttpContextAccessor _httpContextAccessor;
+        private readonly IHttpContextAccessor _httpContextAccessor;
 
-        public MovieApiService(IHttpClientFactory httpClientFactory)
+        public MovieApiService(IHttpClientFactory httpClientFactory,IHttpContextAccessor httpContextAccessor)
         {
             _httpClientFactory = httpClientFactory ?? throw new ArgumentNullException(nameof(httpClientFactory));
-            //_httpContextAccessor = httpContextAccessor ?? throw new ArgumentNullException(nameof(httpContextAccessor));
+            _httpContextAccessor = httpContextAccessor ?? throw new ArgumentNullException(nameof(httpContextAccessor));
         }
 
         public async Task<IEnumerable<Movie>> GetMovies()
@@ -123,7 +124,7 @@ namespace Movies.Client.ApiServices
             throw new NotImplementedException();
         }
 
-        /*public async Task<UserInfoViewModel> GetUserInfo()
+        public async Task<UserInfoViewModel> GetUserInfo()
         {           
             var idpClient = _httpClientFactory.CreateClient("IDPClient");
 
@@ -157,6 +158,6 @@ namespace Movies.Client.ApiServices
             }
 
             return new UserInfoViewModel(userInfoDictionary);
-        }*/
+        }
     }
 }
