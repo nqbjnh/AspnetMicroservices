@@ -7,6 +7,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using Microsoft.IdentityModel.Tokens;
 using Ocelot.Cache.CacheManager;
 using Ocelot.DependencyInjection;
 using Ocelot.Middleware;
@@ -19,6 +20,21 @@ namespace OcelotApiGw
         // For more information on how to configure your application, visit https://go.microsoft.com/fwlink/?LinkID=398940
         public void ConfigureServices(IServiceCollection services)
         {
+
+            var authenticationProviderKey = "IdentityApiKey";
+
+            // NUGET - Microsoft.AspNetCore.Authentication.JwtBearer
+            services.AddAuthentication()
+                .AddJwtBearer(authenticationProviderKey, x =>
+                {
+                    x.Authority = "https://localhost:6005"; // IDENTITY SERVER URL
+                    //x.RequireHttpsMetadata = false;
+                    x.TokenValidationParameters = new TokenValidationParameters
+                    {
+                        ValidateAudience = false
+                    };
+                });
+
             services.AddOcelot().AddCacheManager(settings=>settings.WithDictionaryHandle());
         }
 
